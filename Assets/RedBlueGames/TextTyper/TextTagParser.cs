@@ -66,24 +66,24 @@
         public static List<TextSymbol> CreateSymbolListFromText(string text)
         {
             var symbolList = new List<TextSymbol>();
-            int parsedCharacters = 0;
-            while (parsedCharacters < text.Length)
+            int numParsedCharacters = 0;
+            while (numParsedCharacters < text.Length)
             {
                 TextSymbol symbol = null;
 
                 // Check for tags
-                var remainingText = text.Substring(parsedCharacters, text.Length - parsedCharacters);
-                if (RichTextTag.StringStartsWithTag(remainingText))
+                var nextCharacter = text[numParsedCharacters];
+                if (RichTextTag.IsCharacterTagOpening(nextCharacter))
                 {
-                    var tag = RichTextTag.ParseNext(remainingText);
+                    var tag = RichTextTag.ParseNext(text, numParsedCharacters, text.Length - 1);
                     symbol = new TextSymbol(tag);
                 }
                 else
                 {
-                    symbol = new TextSymbol(remainingText.Substring(0, 1));
+                    symbol = new TextSymbol(nextCharacter);
                 }
 
-                parsedCharacters += symbol.Length;
+                numParsedCharacters += symbol.Length;
                 symbolList.Add(symbol);
             }
 
@@ -125,6 +125,11 @@
             public TextSymbol(string character)
             {
                 this.Character = character[0];
+            }
+
+            public TextSymbol(char character)
+            {
+                this.Character = character;
             }
 
             public TextSymbol(RichTextTag tag)
