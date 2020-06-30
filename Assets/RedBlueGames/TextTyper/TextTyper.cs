@@ -217,8 +217,9 @@
         /// <param name="text">Full text string with tags</param>
         private void ProcessCustomTags(string text) 
         {
-            this.characterPrintDelays = new List<float>(text.Length);
-            this.animations = new List<TextAnimation>();
+            this.characterPrintDelays.Clear();
+            this.characterPrintDelays.Capacity = text.Length;
+            this.animations.Clear();
 
             var textAsSymbolList = TextTagParser.CreateSymbolListFromText(text);
 
@@ -319,6 +320,12 @@
             {
                 this.PrintCompleted.Invoke();
             }
+        }
+
+        private void Awake()
+        {
+            this.characterPrintDelays = new List<float>();
+            this.animations = new List<TextAnimation>();
         }
 
         /// <summary>
